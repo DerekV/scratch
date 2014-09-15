@@ -22,12 +22,6 @@ public class ScratchTest {
     };
 
     @Test
-    public void cook_returns_a_Cooker() {
-        Scratch.Recipe<Void> recipe = Scratch.createRecipe(Void.class);
-        assertThat(recipe, is(notNullValue()));
-    }
-
-    @Test
     public void cooking_with_nil_step() {
         Scratch.Step<Void,Void> doNothing = new Scratch.Step<Void,Void>() {
 

@@ -20,6 +20,8 @@ public class ScratchTest {
             return in + 4;
         }
     };
+    public static final PassThrough<Integer> PASS_THROUGH_INT = new PassThrough<>();
+
 
     @Test
     public void cooking_with_nil_step() {
@@ -32,18 +34,18 @@ public class ScratchTest {
             }
         };
 
-        createRecipe(Void.class).step(doNothing).cook();
+        createRecipe(Void.class).startWith(doNothing).lastly(doNothing).cook();
     }
 
     @Test
     public void cooking_up_a_number() {
-        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).step(JUST_7);
+        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).startWith(JUST_7).lastly(PASS_THROUGH_INT);
         assertThat(recipeFor7.cook(), is(7));
     }
 
     @Test
     public void adding_up_some_numbers() {
-        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).step(JUST_7).step(ADD_4);
+        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).startWith(JUST_7).lastly(ADD_4);
         assertThat(recipeFor7.cook(), is(11));
     }
 
@@ -56,8 +58,19 @@ public class ScratchTest {
             }
         };
 
-        Scratch.Recipe<String> recipeFor7 = createRecipe(String.class).step(JUST_7).step(ADD_4).step(intToString);
+        Scratch.Recipe<String> recipeFor7 =
+                createRecipe(String.class)
+                        .startWith(JUST_7)
+                        .step(ADD_4)
+                        .lastly(intToString);
         assertThat(recipeFor7.cook(), is("11"));
     }
 
+
+    private static class PassThrough<T> implements Scratch.Step<T,T> {
+        @Override
+        public T apply(T in) {
+            return in;
+        }
+    };
 }

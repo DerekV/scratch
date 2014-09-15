@@ -1,13 +1,16 @@
 package example.derekverlee.scratch;
 
 public class Scratch {
-    public static <Outcome> Recipe<Outcome> createRecipe(Class<Outcome> clazz) {
-        return new SimpleRecipe<>();
+    public static <Outcome> StartRecipe<Outcome> createRecipe(Class<Outcome> clazz) {
+        return new StartRecipe<Outcome>() {
+            @Override
+            public <Next> PartialRecipe<Outcome, Next> startWith(Step<Void, Next> firstStep) {
+                return new SimpleRecipe<Outcome, Next>(firstStep.apply(null));
+            }
+        };
     }
 
-    public interface Recipe<Outcome> {
-        <In, Out> Recipe<Outcome> step(Step<In,Out> nextStep);
-
+    public static interface Recipe<Outcome> {
         Outcome cook();
     }
 
@@ -15,18 +18,37 @@ public class Scratch {
         Output apply(Input out);
     }
 
-    private static class SimpleRecipe<Outcome> implements Recipe<Outcome> {
-        public Object out;
+    public static interface StartRecipe<FinalOutcome> {
+        <Next> PartialRecipe<FinalOutcome,Next> startWith(Step<Void,Next> firstStep);
+    }
 
-        @Override
-        public <In,Out> Recipe<Outcome> step(Step<In,Out> nextStep) {
-            out = nextStep.apply((In)out);
-            return this;
+    public static interface PartialRecipe<FinalOutcome,Current> {
+        <Out> PartialRecipe<FinalOutcome, Out> step(Step<Current, Out> nextStep);
+        Recipe<FinalOutcome> lastly(Step<Current,FinalOutcome> lastStep);
+    }
+
+
+    private static class SimpleRecipe<FinalOutcome, Current> implements PartialRecipe<FinalOutcome, Current> {
+        public final Current value;
+
+        SimpleRecipe(Current value) {
+            this.value = value;
         }
 
         @Override
-        public Outcome cook() {
-            return (Outcome) out;
+        public <Out> PartialRecipe<FinalOutcome, Out> step(Step<Current, Out> nextStep) {
+            Out output = nextStep.apply(value);
+            return new SimpleRecipe<>(output);
+        }
+
+        @Override
+        public Recipe<FinalOutcome> lastly(final Step<Current, FinalOutcome> lastStep) {
+            return new Recipe<FinalOutcome>() {
+                @Override
+                public FinalOutcome cook() {
+                    return lastStep.apply(value);
+                }
+            };
         }
     }
 }

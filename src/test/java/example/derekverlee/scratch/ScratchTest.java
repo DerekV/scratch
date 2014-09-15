@@ -27,17 +27,35 @@ public class ScratchTest {
 
     @Test
     public void cook_returns_a_Cooker() {
-        Scratch.Recipe recipe = Scratch.createRecipe();
+        Scratch.Recipe<Void> recipe = Scratch.createRecipe(Void.class);
         assertThat(recipe, is(notNullValue()));
     }
 
     @Test
-    public void cooking_with_one_step() {
-        Scratch.Step doNothing = new Scratch.Step() {
+    public void cooking_with_nil_step() {
+        Scratch.Step<Void> doNothing = new Scratch.Step<Void>() {
 
+            @Override
+            public Void apply(Void out) {
+                // do nothing
+                return null;
+            }
         };
 
-        Scratch.createRecipe().step(doNothing).cook();
+        Scratch.createRecipe(Void.class).step(doNothing).cook();
+    }
+
+    @Test
+    public void cooking_up_a_number() {
+        Scratch.Step<Integer> just7 = new Scratch.Step<Integer>() {
+            @Override
+            public Integer apply(Integer out) {
+                return 7;
+            }
+        };
+
+        Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(just7);
+        assertThat(recipeFor7.cook(),is(7));
     }
 
 }

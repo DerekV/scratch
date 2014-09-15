@@ -2,6 +2,7 @@ package example.derekverlee.scratch;
 
 import org.junit.Test;
 
+import static example.derekverlee.scratch.Scratch.createRecipe;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -32,18 +33,18 @@ public class ScratchTest {
             }
         };
 
-        Scratch.createRecipe(Void.class).step(doNothing).cook();
+        createRecipe(Void.class).step(doNothing).cook();
     }
 
     @Test
     public void cooking_up_a_number() {
-        Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(JUST_7);
+        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).step(JUST_7);
         assertThat(recipeFor7.cook(), is(7));
     }
 
     @Test
     public void adding_up_some_numbers() {
-        Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(JUST_7).step(ADD_4);
+        Scratch.Recipe<Integer> recipeFor7 = createRecipe(Integer.class).step(JUST_7).step(ADD_4);
         assertThat(recipeFor7.cook(), is(11));
     }
 
@@ -56,7 +57,7 @@ public class ScratchTest {
             }
         };
 
-        Scratch.Recipe<String> recipeFor7 = Scratch.createRecipe(String.class).step(JUST_7).step(ADD_4).step(intToString);
+        Scratch.Recipe<String> recipeFor7 = createRecipe(String.class).step(JUST_7).step(ADD_4).step(intToString);
         assertThat(recipeFor7.cook(),is("11"));
     }
 

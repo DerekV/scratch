@@ -21,10 +21,6 @@ public class ScratchTest {
         }
     };
 
-    @Test
-    public void metaTest() {
-        assertThat(true, is(true));
-    }
 
     @Test
     public void trival_ingrediant() {

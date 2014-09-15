@@ -1,54 +1,51 @@
 package example.derekverlee.scratch;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Scratch {
-    public static <Outcome> StartRecipe<Outcome> createRecipe(Class<Outcome> clazz) {
-        return new StartRecipe<Outcome>() {
-            @Override
-            public <Next> PartialRecipe<Outcome, Next> startWith(Step<Void, Next> firstStep) {
-                return new SimpleRecipe<Outcome, Next>(firstStep.apply(null));
-            }
-        };
+    public static <Outcome> RecipeBuilderStarter<Outcome> createRecipe(Class<Outcome> clazz) {
+        return new RecipeBuilderStarter<>();
     }
+
 
     public static interface Recipe<Outcome> {
         Outcome cook();
+
     }
 
-    public static interface Step<Input,Output> {
-        Output apply(Input out);
-    }
+    public static class RecipeBuilder<FinalT, OutT> {
+        private final List<Step> steps = new ArrayList<>();
 
-    public static interface StartRecipe<FinalOutcome> {
-        <Next> PartialRecipe<FinalOutcome,Next> startWith(Step<Void,Next> firstStep);
-    }
-
-    public static interface PartialRecipe<FinalOutcome,Current> {
-        <Out> PartialRecipe<FinalOutcome, Out> step(Step<Current, Out> nextStep);
-        Recipe<FinalOutcome> lastly(Step<Current,FinalOutcome> lastStep);
-    }
-
-
-    private static class SimpleRecipe<FinalOutcome, Current> implements PartialRecipe<FinalOutcome, Current> {
-        public final Current value;
-
-        SimpleRecipe(Current value) {
-            this.value = value;
+        @SuppressWarnings("unchecked")
+        <NextT> RecipeBuilder<FinalT, NextT> step(Step<OutT, NextT> nextStep) {
+            steps.add(nextStep);
+            return (RecipeBuilder<FinalT, NextT>) this;
         }
 
-        @Override
-        public <Out> PartialRecipe<FinalOutcome, Out> step(Step<Current, Out> nextStep) {
-            Out output = nextStep.apply(value);
-            return new SimpleRecipe<>(output);
-        }
-
-        @Override
-        public Recipe<FinalOutcome> lastly(final Step<Current, FinalOutcome> lastStep) {
-            return new Recipe<FinalOutcome>() {
+        Recipe<FinalT> lastly(Step<OutT, FinalT> lastStep) {
+            steps.add(lastStep);
+            return new Recipe<FinalT>() {
                 @Override
-                public FinalOutcome cook() {
-                    return lastStep.apply(value);
+                public FinalT cook() {
+                    Object current = null; // start with null, first step should expect it
+                    for(Step step : steps) {
+                        current = step.apply(current);
+                    }
+                    return (FinalT) current;
                 }
             };
         }
     }
+
+    public static interface Step<Input, Output> {
+        Output apply(Input out);
+    }
+
+    public static class RecipeBuilderStarter<FinalOutcome> {
+        <A> RecipeBuilder<FinalOutcome, A> startWith(Step<Void, A> firstStep) {
+            return new RecipeBuilder<FinalOutcome, Void>().step(firstStep);
+        }
+    }
+
 }

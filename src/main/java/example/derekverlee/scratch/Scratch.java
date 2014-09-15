@@ -3,17 +3,17 @@ package example.derekverlee.scratch;
 public class Scratch {
     public static <Outcome> Recipe<Outcome> createRecipe(Class<Outcome> clazz) {
         return new Recipe<Outcome>() {
-            public Outcome out;
+            public Object out;
 
             @Override
-            public Recipe<Outcome> step(Step<Outcome> nextStep) {
-                out = nextStep.apply(out);
+            public <In,Out> Recipe<Outcome> step(Step<In,Out> nextStep) {
+                out = nextStep.apply((In)out);
                 return this;
             }
 
             @Override
             public Outcome cook() {
-                return out;
+                return (Outcome) out;
             }
         };
     }
@@ -23,12 +23,12 @@ public class Scratch {
     }
 
     public interface Recipe<Outcome> {
-        Recipe<Outcome> step(Step<Outcome> nextStep);
+        <In, Out> Recipe<Outcome> step(Step<In,Out> nextStep);
 
         Outcome cook();
     }
 
-    public static interface Step<T> {
-        T apply(T out);
+    public static interface Step<Input,Output> {
+        Output apply(Input out);
     }
 }

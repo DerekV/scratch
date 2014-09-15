@@ -33,7 +33,7 @@ public class ScratchTest {
 
     @Test
     public void cooking_with_nil_step() {
-        Scratch.Step<Void> doNothing = new Scratch.Step<Void>() {
+        Scratch.Step<Void,Void> doNothing = new Scratch.Step<Void,Void>() {
 
             @Override
             public Void apply(Void out) {
@@ -47,9 +47,9 @@ public class ScratchTest {
 
     @Test
     public void cooking_up_a_number() {
-        Scratch.Step<Integer> just7 = new Scratch.Step<Integer>() {
+        Scratch.Step<Void,Integer> just7 = new Scratch.Step<Void,Integer>() {
             @Override
-            public Integer apply(Integer in) {
+            public Integer apply(Void in) {
                 return 7;
             }
         };
@@ -60,14 +60,14 @@ public class ScratchTest {
 
     @Test
     public void adding_up_some_numbers() {
-        Scratch.Step<Integer> just7 = new Scratch.Step<Integer>() {
+        Scratch.Step<Void,Integer> just7 = new Scratch.Step<Void,Integer>() {
             @Override
-            public Integer apply(Integer out) {
+            public Integer apply(Void in) {
                 return 7;
             }
         };
 
-        Scratch.Step<Integer> add4 = new Scratch.Step<Integer>() {
+        Scratch.Step<Integer,Integer> add4 = new Scratch.Step<Integer,Integer>() {
             @Override
             public Integer apply(Integer in) {
                 return in + 4;
@@ -76,6 +76,34 @@ public class ScratchTest {
 
         Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(just7).step(add4);
         assertThat(recipeFor7.cook(),is(11));
+    }
+
+    @Test
+    public void change_up_the_types() {
+        Scratch.Step<Void,Integer> just7 = new Scratch.Step<Void,Integer>() {
+            @Override
+            public Integer apply(Void in) {
+                return 7;
+            }
+        };
+
+        Scratch.Step<Integer,Integer> add4 = new Scratch.Step<Integer,Integer>() {
+            @Override
+            public Integer apply(Integer in) {
+                return in + 4;
+            }
+        };
+
+
+        Scratch.Step<Integer, String> intToString = new Scratch.Step<Integer, String>() {
+            @Override
+            public String apply(Integer in) {
+                return Integer.toString(in);
+            }
+        };
+
+        Scratch.Recipe<String> recipeFor7 = Scratch.createRecipe(String.class).step(just7).step(add4).step(intToString);
+        assertThat(recipeFor7.cook(),is("11"));
     }
 
 }

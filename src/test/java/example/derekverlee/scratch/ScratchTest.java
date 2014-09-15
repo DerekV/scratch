@@ -27,8 +27,8 @@ public class ScratchTest {
 
     @Test
     public void cook_returns_a_Cooker() {
-        Scratch.Cook cook = Scratch.cook();
-        assertThat(cook, is(notNullValue()));
+        Scratch.Recipe recipe = Scratch.createRecipe();
+        assertThat(recipe, is(notNullValue()));
     }
 
     @Test
@@ -37,7 +37,7 @@ public class ScratchTest {
 
         };
 
-        Scratch.cook().step(doNothing).run();
+        Scratch.createRecipe().step(doNothing).cook();
     }
 
 }

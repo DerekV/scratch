@@ -1,15 +1,15 @@
 package example.derekverlee.scratch;
 
 public class Scratch {
-    public static Cook cook() {
-        return new Cook() {
+    public static Recipe createRecipe() {
+        return new Recipe() {
             @Override
-            public Cook step(Step nextStep) {
+            public Recipe step(Step nextStep) {
                 return this;
             }
 
             @Override
-            public void run() {
+            public void cook() {
 
             }
         };
@@ -19,10 +19,10 @@ public class Scratch {
         T obtain();
     }
 
-    public interface Cook {
-        Cook step(Step nextStep);
+    public interface Recipe {
+        Recipe step(Step nextStep);
 
-        void run();
+        void cook();
     }
 
     public static interface Step {

@@ -21,19 +21,6 @@ public class ScratchTest {
         }
     };
 
-
-    @Test
-    public void trival_ingrediant() {
-        Scratch.Ingredient<Integer> theNumber5 = new Scratch.Ingredient<Integer>() {
-            @Override
-            public Integer obtain() {
-                return 5;
-            }
-        };
-
-        assertThat(theNumber5.obtain(), is(5));
-    }
-
     @Test
     public void cook_returns_a_Cooker() {
         Scratch.Recipe<Void> recipe = Scratch.createRecipe(Void.class);

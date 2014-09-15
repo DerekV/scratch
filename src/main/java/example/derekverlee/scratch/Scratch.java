@@ -18,10 +18,6 @@ public class Scratch {
         };
     }
 
-    public interface Ingredient<T> {
-        T obtain();
-    }
-
     public interface Recipe<Outcome> {
         <In, Out> Recipe<Outcome> step(Step<In,Out> nextStep);
 

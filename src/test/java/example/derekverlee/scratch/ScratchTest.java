@@ -31,4 +31,13 @@ public class ScratchTest {
         assertThat(cook, is(notNullValue()));
     }
 
+    @Test
+    public void cooking_with_one_step() {
+        Scratch.Step doNothing = new Scratch.Step() {
+
+        };
+
+        Scratch.cook().step(doNothing).run();
+    }
+
 }

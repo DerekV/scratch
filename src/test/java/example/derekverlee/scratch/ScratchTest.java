@@ -49,13 +49,33 @@ public class ScratchTest {
     public void cooking_up_a_number() {
         Scratch.Step<Integer> just7 = new Scratch.Step<Integer>() {
             @Override
-            public Integer apply(Integer out) {
+            public Integer apply(Integer in) {
                 return 7;
             }
         };
 
         Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(just7);
         assertThat(recipeFor7.cook(),is(7));
+    }
+
+    @Test
+    public void adding_up_some_numbers() {
+        Scratch.Step<Integer> just7 = new Scratch.Step<Integer>() {
+            @Override
+            public Integer apply(Integer out) {
+                return 7;
+            }
+        };
+
+        Scratch.Step<Integer> add4 = new Scratch.Step<Integer>() {
+            @Override
+            public Integer apply(Integer in) {
+                return in + 4;
+            }
+        };
+
+        Scratch.Recipe<Integer> recipeFor7 = Scratch.createRecipe(Integer.class).step(just7).step(add4);
+        assertThat(recipeFor7.cook(),is(11));
     }
 
 }

@@ -12,4 +12,17 @@ public class ScratchTest {
         assertThat(true, is(true));
     }
 
+    @Test
+    public void trival_ingrediant() {
+        Scratch.Ingredient<Integer> theNumber5 = new Scratch.Ingredient<Integer>() {
+            @Override
+            public Integer fetch() {
+                return 5;
+            }
+        };
+
+        assertThat(theNumber5.fetch(),is(5));
+    }
+
+
 }

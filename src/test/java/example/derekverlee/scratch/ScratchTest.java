@@ -4,7 +4,6 @@ import org.junit.Test;
 
 import static example.derekverlee.scratch.Scratch.createRecipe;
 import static org.hamcrest.CoreMatchers.is;
-import static org.hamcrest.CoreMatchers.notNullValue;
 import static org.hamcrest.MatcherAssert.assertThat;
 
 public class ScratchTest {
@@ -24,7 +23,7 @@ public class ScratchTest {
 
     @Test
     public void cooking_with_nil_step() {
-        Scratch.Step<Void,Void> doNothing = new Scratch.Step<Void,Void>() {
+        Scratch.Step<Void, Void> doNothing = new Scratch.Step<Void, Void>() {
 
             @Override
             public Void apply(Void out) {
@@ -58,7 +57,7 @@ public class ScratchTest {
         };
 
         Scratch.Recipe<String> recipeFor7 = createRecipe(String.class).step(JUST_7).step(ADD_4).step(intToString);
-        assertThat(recipeFor7.cook(),is("11"));
+        assertThat(recipeFor7.cook(), is("11"));
     }
 
 }
